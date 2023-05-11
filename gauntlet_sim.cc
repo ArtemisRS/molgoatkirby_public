@@ -40,121 +40,21 @@ int hit(int atk, int def, int max) {
 	}
 }
 
-int dharok(int atk, int def, int max, int hpCur, int hpMax) {
-	int temp = hit(atk, def, max);
-	int multiplier = 1 + ((hpMax - hpCur)/100) * hpMax / 100;
-	temp = temp * multiplier;
-	return temp;
-}
-
-int scythe(int atk, int def, int max) {
-	int temp = 0;
-	temp += hit(atk, def, max);
-	temp += hit(atk, def, max/2);
-	temp += hit(atk, def, max/4);
-	return temp;
-}
-
-int chally(int atk, int def, int max) {
-	int temp = 0;
-	if (getRandom(0,atk) > getRandom(0,def)) temp += getRandom(0,max) + max * 0.1;
-	if (getRandom(0,atk*0.75) > getRandom(0,def)) temp += getRandom(0,max) + max * 0.1;
-	return temp;
-}
-/* //old claw formula
-int claw(int atk, int def, int max) {
-	double atkRoll, defRoll;
-	max = max - 1;
-	int i;
-
-	for (i = 1; i < 5; i++) {
-		atkRoll = getRandom(0,atk);
-		defRoll = getRandom(0,def);
-		if (atkRoll > defRoll) break;
-	}
-
-	if (i == 5) { return 1;} else {
-		double boost = 1.25 - (double)(i) * 0.25;
-		int specBonus = (int)floor(max * boost);
-		return getRandom(0,max) + 1 + specBonus;
-	}
-}
-*/
-
-int claw(int atk, int def, int max) {
-	int hit = 0;
-	int totalHit = 0;
-
-	double max1 = max - 1;
-	int min1 = ceil(max1/2);
-
-	int max2 = ceil(max1*7/8);
-	int min2 = ceil(max1*3/8);
-
-	int max3 = ceil(max1*6/8);
-	int min3 = ceil(max1*2/8);
-
-	int max4 = ceil(max1*10/8);
-	int min4 = ceil(max1*2/8);
-
-	if (getRandom(0,atk) > getRandom(0,def)) {
-		hit = getRandom(min1, max1);
-		totalHit = (hit + hit/2 + 2*hit/4 + 1);
-	} else if (getRandom(0,atk) > getRandom(0,def)) {
-		hit = getRandom(min2, max2);
-		totalHit = (hit + 2*hit/2 + 1);
-	} else if (getRandom(0,atk) > getRandom(0,def)) {
-		hit = getRandom(min3, max3);
-		totalHit = (2*hit + 1);
-	} else if (getRandom(0,atk) > getRandom(0,def)) {
-		hit = getRandom(min4, max4);
-		totalHit = (hit + 1);
-	} else if (getRandom(0,2) < 2) {
-		totalHit = 2;
-	}
-
-
-	return totalHit;
-}
-
-int dds(int atk, int def, int max) {
-	int temp = 0;
-	temp += hit(atk*1.15, def, max*1.15);
-	temp += hit(atk*1.15, def, max*1.15);
-	return temp;
-}
-
 struct gear {
 	//range
-	int accBP   = 0; int maxBP   = 0;
-	int accDHCB = 0; int maxDHCB = 0;
-	int accBofa = 0; int maxBofa = 0;
-	int accTbow = 0; int maxTbow = 0;
 	int accCbow1 = 0; int maxCbow1 = 0;
 	int accCbow2 = 0; int maxCbow2 = 0;
 	int accCbow3 = 0; int maxCbow3 = 0;
 
 	//melee
-	int accLance   = 0; int maxLance   = 0;
-	int accWhip    = 0; int maxWhip    = 0;
-	int accTent    = 0; int maxTent    = 0;
-	int accSaeldor = 0; int maxSaeldor = 0;
-	int accScythe  = 0; int maxScythe  = 0;
-	int accClaws   = 0; int maxClaws   = 0;
-	int accBGS     = 0; int maxBGS     = 0;
-	int accDDS     = 0; int maxDDS     = 0;
-	int accChally  = 0; int maxChally  = 0;
-	int accDharok  = 0; int maxDharok  = 0;
+	int accPunchNaked   = 0; int maxPunchNaked   = 0;
+	int accPunchArmour    = 0; int maxPunchArmour    = 0;
+	int accScepter    = 0; int maxScepter    = 0;
 	int accChally1 = 0; int maxChally1 = 0;
 	int accChally2 = 0; int maxChally2 = 0;
 	int accChally3 = 0; int maxChally3 = 0;
 
 	//mage
-	int accSang  = 0; int maxSang  = 0;
-	int accIce   = 0; int maxIce   = 0;
-	int accBlood = 0; int maxBlood = 0;
-	int accSurge = 0; int maxSurge = 0;
-	int accVol   = 0; int maxVol   = 0;
 	int accCstaff1 = 0; int maxCstaff1 = 0;
 	int accCstaff2 = 0; int maxCstaff2 = 0;
 	int accCstaff3 = 0; int maxCstaff3 = 0;
@@ -182,11 +82,13 @@ struct gear {
 			redempsLeft = 3;
 			redempThresh = 13;
 			auguryDef = calcAD(166,99*1.25,1);
+                        //TODO: this appears to be broken
 			rigourDef = calcAD(166,99*(1.25*0.3 +0.7),1);
 		} else 	{
 			redempsLeft = 1;
 			redempThresh = 12;
 			auguryDef = calcAD(0,99*1.25,1);
+                        //TODO: this appears to be broken
 			rigourDef = calcAD(0,99*(1.25*0.3 +0.7),1);
 		}
 		curMageDef = rigourDef; curMageDef = auguryDef;
@@ -196,11 +98,7 @@ struct gear {
 	}
 
 	void init(int a,int a2,int b,int b2,int c,int c2, int d, int d2, int e, int e2) {	
-		accBP = a; maxBP = a2; 
-		accDHCB = b; maxDHCB = b2;
-		accLance = c; maxLance = c2;
-		accClaws = d; maxClaws = d2;
-		accBGS = e; maxBGS = e2;
+		accPunchNaked = c; maxPunchNaked = c2;
 	}
 
 	// resetStats, food, probably uneccessary
@@ -260,9 +158,9 @@ struct gear {
 			case 1: meleeACC = accChally1; meleeMAX = maxChally1; break;
 			case 2: meleeACC = accChally2; meleeMAX = maxChally2; break;
 			case 3: meleeACC = accChally3; meleeMAX = maxChally3; break;
-			case 4: meleeACC = accLance; meleeMAX = maxLance; break;
-			case 5: meleeACC = accWhip; meleeMAX = maxWhip; break;
-			case 6: meleeACC = accTent; meleeMAX = maxTent; break;
+			case 4: meleeACC = accPunchNaked; meleeMAX = maxPunchNaked; break;
+			case 5: meleeACC = accPunchArmour; meleeMAX = maxPunchArmour; break;
+			case 6: meleeACC = accScepter; meleeMAX = maxScepter; break;
 			default: throw "wtf unknown weapon selected";
 		}
 
@@ -355,85 +253,6 @@ struct npcBoss {
 		if (prayerStart == 1) prayer = "magic";
 		else if (prayerStart == 2) prayer = "range";
 		else prayer = "melee";
-	}
-
-	void hitBossHalf(int accuracy, int max, string style) {
-		int defenceValue = 0;
-		if (style == "stab") defenceValue = stabDef;
-		else if(style == "slash") defenceValue = slashDef;
-		else if(style == "crush") defenceValue = crushDef;
-		else if(style == "magic") defenceValue = magicDef;
-		else if(style == "range") defenceValue = rangeDef;
-		else throw "Unknown style for hitBossHalf";
-		curHp -= hit(accuracy, defenceValue, max)/2;
-	}	
-
-	void updateDef() {
-		int stabDef  = calcAD(equipStabDef,curDef+1,1);
-		int slashDef = calcAD(equipSlashDef,curDef+1,1);
-		int crushDef = calcAD(equipCrushDef,curDef+1,1);
-		int magicDef = calcAD(equipMagicDef,curMag+1,1);
-		int rangeDef = calcAD(equipRangeDef,curDef+1,1);
-	}
-
-	int rubyBoss(int accuracy, int max) {
-		if (getRandom(1,1000) <= 66) return std::min<int>(curHp * 0.2,100);
-		else return hit(accuracy, rangeDef, max);
-	}
-
-	int diamondBoss(int accuracy, int max) {
-		if (getRandom(1,100) <= 11) return getRandom(0,max * 1.15);
-		else return hit(accuracy, rangeDef, max);
-	}
-
-	void boltBoss(int accuracy, int max){
-		if (curHp <= rubyThreshold) curHp -= diamondBoss(accuracy, max);
-		else curHp -= rubyBoss(accuracy, max);
-	}
-
-	void boltBossHalf(int accuracy, int max) {
-		if (curHp <= rubyThreshold) curHp -= diamondBoss(accuracy, max) / 2;
-		else curHp -= rubyBoss(accuracy, max) / 2;
-	}
-
-	void clawBoss(int accuracy, int max) {
-		curHp -= claw(accuracy, slashDef, max);
-	}
-
-	void dharokBoss(int accuracy, int max, int currentHP, int fullHP) {
-		curHp -= dharok(accuracy, slashDef, max, currentHP, fullHP);
-	}
-
-	void challyBoss(int accuracy, int max) {
-		curHp -= chally(accuracy, slashDef, max);
-	}
-
-	void scytheBoss(int accuracy, int max) {
-		curHp -= scythe(accuracy, slashDef, max);
-	}
-
-	void thrallHit() {
-		curHp -= getRandom(0,3);
-	}
-
-	void bgsBoss(int accuracy, int max) {
-		int temp = hit(accuracy*2, slashDef, max*1.21);
-		curHp -= temp;
-		curDef -= temp;
-		if (curDef < 0) curDef = 0;
-		updateDef();
-	}
-
-	void bgsBossHalf(int accuracy, int max) {
-		int temp = hit(accuracy*2, slashDef, max*1.21);
-		curHp -= temp/2;
-		curDef -= temp;
-		if (curDef < 0) curDef = 0;
-		updateDef();
-	}
-
-	void ddsBoss(int accuracy, int max) {
-		curHp -= dds(accuracy,slashDef, max);
 	}
 
 	void updateDelay(){
@@ -716,35 +535,19 @@ int main() {
 	//player stats
 
 	//range
-	int bpA   = 0; 		int bpMax   = 0;
-	int dhcbA = 0; 		int dhcbMax = 0;
-	int bofaA = 0; 		int bofaMax = 0;
-	int tbowA = 0; 		int tbowMax = 0;
 	int cbow1A = 72;	int cbow1Max = 21;
 	int cbow2A = 118;	int cbow2Max = 31;
 	int cbow3A = 172; 	int cbow3Max = 41;
 
 	//melee
-	int lanceA   = 0; 		int lanceMax   = 13; //punch naked
-	int whipA    = 16;		int whipMax    = 13; //punch armour
-	int tentA    = 0;		int tentMax    = 17; //scepter naked
-	int saeldorA = 0;		int saeldorMax = 0;
-	int scytheA  = 0;		int scytheMax  = 0;
-	int clawsA   = 0; 		int clawsMax   = 0;
-	int bgsA     = 0;		int bgsMax     = 0;
-	int ddsA     = 0;		int ddsMax     = 0;
-	int challyA  = 0;		int challyMax  = 0;
-	int dharokA  = 0;		int dharokMax  = 0;
+	int punch_nakedA   = 0; 		int punch_nakedMax   = 13; //punch naked
+	int punch_armourA    = 16;		int punch_armourMax    = 13; //punch armour
+	int scepterA    = 0;		int scepterMax    = 17; //scepter naked
 	int chally1A = 68;		int chally1Max = 22;
 	int chally2A = 114;		int chally2Max = 31;
 	int chally3A = 166;		int chally3Max = 42;
 
 	//mage
-	int sangA  = 0;		int sangMax  = 0;
-	int iceA   = 0;		int iceMax   = 0;
-	int bloodA = 0;		int bloodMax = 0;
-	int surgeA = 0;		int surgeMax = 0;
-	int volA   = 0;		int volMax   = 0;
 	int cstaff1A = 84;	int cstaff1Max = 23;
 	int cstaff2A = 128;	int cstaff2Max = 31;
 	int cstaff3A = 184;	int cstaff3Max = 39;
@@ -756,74 +559,41 @@ int main() {
 	}
 
 	//range accuracy rolls
-	int accBP   = calcAD(bpA,  112*1.2,1);
-	int accDHCB = calcAD(dhcbA,112*1.2,1.3);
-	int accBofa = calcAD(bofaA,112*1.2,1);
-	int accTbow = calcAD(tbowA,112*1.2,1);
 	int accCbow1 = calcAD(cbow1A,99*1.2,1);
 	int accCbow2 = calcAD(cbow2A,99*1.2,1);
 	int accCbow3 = calcAD(cbow3A,99*1.2,1);
 
 	//melee accuracy rolls
-	int accLance   = calcAD(lanceA,  120*1.2,1.2);
-	int accWhip    = calcAD(whipA,   120*1.2,1);
-	int accTent    = calcAD(tentA,   120*1.2,1);
-	int accSaeldor = calcAD(saeldorA,120*1.2,1);
-	int accScythe  = calcAD(scytheA, 120*1.2,1);
-	int accClaws   = calcAD(clawsA,  120*1.2,1);
-	int accBGS     = calcAD(bgsA,    120*1.2,1);
-	int accDDS     = calcAD(ddsA,    120*1.2,1);
-	int accChally  = calcAD(challyA, 120*1.2,1);
-	int accDharok  = calcAD(dharokA, 120*1.2,1);
+	int accPunchNaked   = calcAD(punch_nakedA,  99*1.2,1);
+	int accPunchArmour    = calcAD(punch_armourA,   99*1.2,1);
+	int accScepter    = calcAD(scepterA,   99*1.2,1);
 	int accChally1 = calcAD(chally1A,99*1.2,1);
 	int accChally2 = calcAD(chally2A,99*1.2,1);
 	int accChally3 = calcAD(chally3A,99*1.2,1);
 
 
 	//mage accuracy rolls
-	int accSang  = calcAD(sangA, 109*1.2,1);
-	int accIce   = calcAD(iceA,  109*1.2,1);
-	int accBlood = calcAD(bloodA,109*1.2,1);
-	int accSurge = calcAD(surgeA,109*1.2,1);
-	int accVol   = calcAD(volA,  109*1.2,1);
 	int accCstaff1 = calcAD(cstaff1A,99*1.25+3,1);
 	int accCstaff2 = calcAD(cstaff2A,99*1.25+3,1);
 	int accCstaff3 = calcAD(cstaff3A,99*1.25+3,1);
 
 	cout << "Starting Program..." << endl;
 	gear normalGear;
-	//normalGear.init(accBP,bpMax,accDHCB,dhcbMax,accLance,lanceMax,accClaws,clawsMax,accBGS,bgsMax);
 
 	//initialize range gear
-	normalGear.accBP      = accBP;  	normalGear.maxBP   = bpMax;
-	normalGear.accDHCB    = accDHCB; 	normalGear.maxDHCB = dhcbMax;
-	normalGear.accBofa    = accBofa; 	normalGear.maxBofa = bofaMax;
-	normalGear.accTbow    = accTbow; 	normalGear.maxTbow = tbowMax;
 	normalGear.accCbow1   = accCbow1;	normalGear.maxCbow1 = cbow1Max;
 	normalGear.accCbow2   = accCbow2;	normalGear.maxCbow2 = cbow2Max;
 	normalGear.accCbow3   = accCbow3;	normalGear.maxCbow3 = cbow3Max;
 
 	//initialize melee gear
-	normalGear.accLance   = accLance;	normalGear.maxLance = lanceMax;
-	normalGear.accWhip    = accWhip; 	normalGear.maxWhip = whipMax;
-	normalGear.accTent    = accTent; 	normalGear.maxTent = tentMax;
-	normalGear.accSaeldor = accSaeldor; normalGear.maxSaeldor = saeldorMax;
-	normalGear.accScythe  = accScythe; 	normalGear.maxScythe = scytheMax;
-	normalGear.accClaws   = accClaws; 	normalGear.maxClaws = clawsMax;
-	normalGear.accBGS     = accBGS; 	normalGear.maxBGS = bgsMax;
-	normalGear.accDDS     = accDDS; 	normalGear.maxDDS = ddsMax;
-	normalGear.accChally  = accChally;	normalGear.maxChally = challyMax;
-	normalGear.accDharok  = accDharok;  normalGear.maxDharok = dharokMax;
+	normalGear.accPunchNaked   = accPunchNaked;	normalGear.maxPunchNaked = punch_nakedMax;
+	normalGear.accPunchArmour    = accPunchArmour; 	normalGear.maxPunchArmour = punch_armourMax;
+	normalGear.accScepter    = accScepter; 	normalGear.maxScepter = scepterMax;
 	normalGear.accChally1 = accChally1;	normalGear.maxChally1 = chally1Max;
 	normalGear.accChally2 = accChally2;	normalGear.maxChally2 = chally2Max;
 	normalGear.accChally3 = accChally3;	normalGear.maxChally3 = chally3Max;
 
 	//initialize mage gear
-	normalGear.accSang    = accSang; 	normalGear.maxSang = sangMax;
-	normalGear.accIce     = accIce; 	normalGear.maxIce = iceMax;
-	normalGear.accBlood   = accBlood; 	normalGear.maxBlood = bloodMax;
-	normalGear.accSurge   = accSurge; 	normalGear.maxSurge = surgeMax;
-	normalGear.accVol     = accVol; 	normalGear.maxVol = volMax;
 	normalGear.accCstaff1 = accCstaff1; normalGear.maxCstaff1 = cstaff1Max;
 	normalGear.accCstaff2 = accCstaff2; normalGear.maxCstaff2 = cstaff2Max;
 	normalGear.accCstaff3 = accCstaff3; normalGear.maxCstaff3 = cstaff3Max;
@@ -880,7 +650,7 @@ int main() {
 			if (result.curHp <= 0 && result.playerAlive) totalWins++;
 			if (result.ticks <= 200 && result.playerAlive) sub2++;
 		}	*/
-		bool quickTest = true; //Use this to skip most of the tests, and just do the speedrun at end
+		bool quickTest = false; //Use this to skip most of the tests, and just do the speedrun at end
 		// get data for all 6 methods, for 0-12 food
 		for (int x = 0; x <= 12; x++) {
 			if (quickTest) x = 7;

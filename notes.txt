@@ -1,0 +1,8 @@
+### steps going forward
+- review if the generated data matches the spreadsheet
+  - if it doesn't, figure out what needs to be done to make that happen
+- rename the misnamed stuff (melee/punch in particular)
+- check that the accuracy + max_hit are being calced correctly
+- check that range/magic def is being calced correctly
+
+As errors are found, consider patching and/or upstreaming
