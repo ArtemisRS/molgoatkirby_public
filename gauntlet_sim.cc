@@ -91,6 +91,7 @@ struct gear {
                         //TODO: this appears to be broken
 			rigourDef = calcAD(0,99*(1.25*0.3 +0.7),1);
 		}
+                //TODO: this appears very broken
 		curMageDef = rigourDef; curMageDef = auguryDef;
 		curRangeDef = auguryDef;
 		incomingHitDelay = -1;
@@ -217,7 +218,7 @@ struct npcBoss {
 	bool redempNado = true;
 	bool redemp = true;
 	bool nado = false;
-	int nadoDelay = 6; //seems to be 4-8 usually, but seen as high as 10
+	int nadoDelay = 6*5; //seems to be 4-8 usually, but seen as high as 10
 	bool playerAlive = true;
 	int prayerStart = 0;
 	string prayer = "test";
@@ -245,7 +246,9 @@ struct npcBoss {
 		else if(style == "range") defenceValue = rangeDef;
 		else if(style == "melee") defenceValue = crushDef; // assuming all are the same
 		else throw "Unknown style for hitBoss";
-		curHp -= hit(accuracy, defenceValue, max);
+                int ahit = hit(accuracy, defenceValue, max);
+                //cout << "  <pla> " << style << " atk: " << ahit << endl;
+		curHp -= ahit;
 	}
 
 	void randomizePrayer() {
@@ -258,18 +261,22 @@ struct npcBoss {
 	void updateDelay(){
 		hitDelay--;
 		nadoDelay--;
-		if (nadoDelay == 7) nado = false;
+		if (nadoDelay == 7*5) nado = false;
+                //cout << "  [hun] hd: " << hitDelay << ", nd: " << nadoDelay << endl;
 	}
 
 	void hitPlayer(gear& myGear) {
-		if (nadoDelay == 0) {
+		if (nadoDelay <= 0) {
 			nado = true;
-			nadoDelay = 11;
+			nadoDelay = 12*5;
+                        //cout << "  [hun] sending nado" << endl;
 		} else if (hitCount%8 < 4) {
 			myGear.addHit(hit(rangeAtk,myGear.curRangeDef,bossMax),1);
+                        //cout << "  [hun] range hit: " << myGear.incomingDmg << endl;
 			//hitDelay = 4;
 		} else {
 			myGear.addHit(hit(magicAtk,myGear.curMageDef,bossMax),1);
+                        //cout << "  [hun] mage hit: " << myGear.incomingDmg << endl;
 			//hitDelay = 4;
 		}
 		hitCount++;
@@ -449,18 +456,6 @@ struct npcBoss {
 
 };
 
-
-npcBoss fightBossDPS(gear myGear, int hp, string phase){
-	npcBoss boss;
-	boss.ticks = 8*3 + 4; // 8 fish and 4 tick death animation
-	while (boss.curHp > 0) {
-		boss.hitBoss(myGear.accChally3, myGear.maxChally3, "slash");
-		boss.ticks += 4;
-	}
-
-	return boss;
-}
-
 npcBoss fightBoss(gear myGear, int tickLoss, string method){
 	// boss starts on tick 3, I attack on tick 1. 
 	// if boss in corner, I start tyick 1, boss starts tick 7
@@ -501,6 +496,7 @@ npcBoss fightBoss(gear myGear, int tickLoss, string method){
 	else if (method == "doublet3staffbow") {
 		while (boss.curHp > 0 && myGear.alive) {
 			boss.ticks++;
+                        //cout << "t" << boss.ticks << " - HHP: " << boss.curHp << " - PHP: " << myGear.hp << endl;
 			boss.updateDelay();
 			myGear.updateDelay();
 			myGear.handleHealing(boss.nado);

@@ -6,3 +6,21 @@
 - check that range/magic def is being calced correctly
 
 As errors are found, consider patching and/or upstreaming
+
+
+1. Early summary
+  - Deleted a bunch of irrelevant stuff to make it easier to tell what was going
+   on. About 250 lines worth. Mostly other weapons and associated weapons.
+  - Renamed all the melee punch bits that were reusing lance/whip etc. Along the
+    way removed the modifiers that were causing them to have bonus accuracy.
+  - Compared numbers produced to the ones in the spreadsheet. There are some
+    differences that will need to be understood.
+  - Overall the differences from my own sim seems to be primarily affected by
+    the following:
+    - This sim doesn't appear to handle player magic def w/rigour correctly
+    - It also doesn't switch out the player defence roll to account for what
+      style the player is currently using
+    - nado timer is broken such that it never spawns
+    - I don't take into account the final hit/death delay which is +6t.
+    - I start on tick 0, not 1, which makes me off by 1t
+    - I don't cover other hit delays either, but those should not have an impact
